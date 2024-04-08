@@ -5,6 +5,9 @@ It is intended to be fast to use with a certain degree of flexibility.
 
 ## Examples
 
+### `ls -lha` 
+You can find an implementation of `ls -lha` with some additional features [here](https://github.com/toxyl/lha).
+
 ### `examples/codecs/main.go`
 A test application for reading and writing data using the different formats supported. Also tests checksum comparisons.
 
@@ -16,9 +19,6 @@ A tool that can list all files and directories contained in a directory. Recursi
 
 ### `examples/hello/main.go`
 An example that shows how to create a script on the fly, make it executable and execute it.
-
-### `examples/lha/main.go`
-An example application that acts like `ls -lha` with a few extras.
 
 ### `examples/ls/main.go`
 An example that acts like a call to `ls`. 
