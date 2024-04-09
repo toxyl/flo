@@ -21,7 +21,7 @@ echo "Hello $1"
 	tmpFile := flo.File("/tmp/hello.sh")
 	defer func() { _ = tmpFile.Remove() }()
 
-	if err := tmpFile.WriteBytes([]byte(script)).SetExec(true, true, true).Exec(os.Args[1]); err != nil {
+	if err := tmpFile.WriteBytes([]byte(script)).PermExec(true, true, true).Exec(os.Args[1]); err != nil {
 		fmt.Printf("Command failed:\n%s\n", err.Error())
 		os.Exit(1)
 	}
