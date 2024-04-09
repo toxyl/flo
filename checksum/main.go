@@ -50,6 +50,10 @@ func (c *Checksum) Matches(other *Checksum) bool {
 	return c.sum() == other.sum()
 }
 
+func (c *Checksum) MatchesString(str string) bool {
+	return c.sum() == str
+}
+
 func (c *Checksum) MatchesBytes(data []byte) bool {
 	return c.sum() == c.algo.EncodeString(data)
 }
