@@ -109,7 +109,10 @@ func (f *FileObj) Remove() error {
 }
 
 func (f *FileObj) Copy(destinationPath string) error {
-	return utils.FileCopy(f.Path(), destinationPath, f.Parent().FileMode(), f.FileMode())
+	fp := f.Parent()
+	fp.updateInfo()
+	f.updateInfo()
+	return utils.FileCopy(f.Path(), destinationPath, fp.FileMode(), f.FileMode())
 }
 
 func (f *FileObj) CopyFrom(file *FileObj) error {
