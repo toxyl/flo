@@ -48,46 +48,46 @@ func (f *FileObj) Mklink(path string) error {
 	return os.Symlink(f.Path(), fSymlink.Path())
 }
 
-func (f *FileObj) Open() *os.File {
+func (f *FileObj) Open() (file *os.File, closer func()) {
 	file, err := os.OpenFile(f.Path(), os.O_RDWR, os.ModePerm)
 	if log.Error(err, "could not open file %s", f.Path()) {
-		return nil
+		return nil, nil
 	}
-	return file
+	return file, func() { file.Close() }
 }
 
-func (f *FileObj) OpenReadOnly() *os.File {
+func (f *FileObj) OpenReadOnly() (file *os.File, closer func()) {
 	file, err := os.OpenFile(f.Path(), os.O_RDONLY, os.ModePerm)
 	if log.Error(err, "could not open file %s", f.Path()) {
-		return nil
+		return nil, nil
 	}
-	return file
+	return file, func() { file.Close() }
 }
 
-func (f *FileObj) OpenWriteOnly() *os.File {
+func (f *FileObj) OpenWriteOnly() (file *os.File, closer func()) {
 	file, err := os.OpenFile(f.Path(), os.O_WRONLY, os.ModePerm)
 	if log.Error(err, "could not open file %s", f.Path()) {
-		return nil
+		return nil, nil
 	}
-	return file
+	return file, func() { file.Close() }
 }
 
 // OpenAppend opens the file for appending, creating the file if it doesn't exist.
-func (f *FileObj) OpenAppend() *os.File {
+func (f *FileObj) OpenAppend() (file *os.File, closer func()) {
 	file, err := os.OpenFile(f.Path(), os.O_CREATE|os.O_APPEND, os.ModePerm)
 	if log.Error(err, "could not open file %s", f.Path()) {
-		return nil
+		return nil, nil
 	}
-	return file
+	return file, func() { file.Close() }
 }
 
 // OpenTruncate opens the file for writing, creating the file if it doesn't exist. The file will be truncated if it exists.
-func (f *FileObj) OpenTruncate() *os.File {
+func (f *FileObj) OpenTruncate() (file *os.File, closer func()) {
 	file, err := os.OpenFile(f.Path(), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, os.ModePerm)
 	if log.Error(err, "could not open file %s", f.Path()) {
-		return nil
+		return nil, nil
 	}
-	return file
+	return file, func() { file.Close() }
 }
 
 func (f *FileObj) Remove() error {
