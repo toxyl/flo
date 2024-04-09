@@ -31,7 +31,7 @@ func (f *FileObj) LastModified() time.Time               { return f.info.LastMod
 func (f *FileObj) FileMode() fs.FileMode                 { return f.info.Permissions.FileMode() }
 func (f *FileObj) Permissions() *permissions.Permissions { return f.info.Permissions }
 func (f *FileObj) Checksum() *checksum.Checksum          { f.info.Checksum.Update(); return f.info.Checksum }
-func (f *FileObj) Info() *FileInfo                       { return f.info }
+func (f *FileObj) Info() *FileInfo                       { f.updateInfo(); return f.info }
 func (f *FileObj) Exists() bool                          { return f.info.Exists }
 func (f *FileObj) Depth() int                            { return strings.Count(f.Path(), string(filepath.Separator)) }
 func (f *FileObj) NewerThan(t time.Time) bool            { return f.info.NewerThan(t) }
