@@ -38,6 +38,14 @@ func (f *FileObj) NewerThan(t time.Time) bool            { return f.info.NewerTh
 func (f *FileObj) OlderThan(t time.Time) bool            { return f.info.OlderThan(t) }
 func (f *FileObj) String(lenOwner, lenGroup int) string  { return f.info.String(lenOwner, lenGroup) }
 func (f *FileObj) Mkparent(perm fs.FileMode) error       { return f.Parent().Mkdir(perm) }
+func (f *FileObj) Create(perm fs.FileMode) error {
+	file, err := os.Create(f.Path())
+	if log.Error(err, "could not create file %s", f.Path()) {
+		return err
+	}
+	file.Close()
+	return f.Perm(perm)
+}
 
 // Mklink creates a symlink at the given path pointing this file's path
 func (f *FileObj) Mklink(path string) error {
