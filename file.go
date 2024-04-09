@@ -39,6 +39,15 @@ func (f *FileObj) OlderThan(t time.Time) bool            { return f.info.OlderTh
 func (f *FileObj) String(lenOwner, lenGroup int) string  { return f.info.String(lenOwner, lenGroup) }
 func (f *FileObj) Mkparent(perm fs.FileMode) error       { return f.Parent().Mkdir(perm) }
 
+// Mklink creates a symlink at the given path pointing this file's path
+func (f *FileObj) Mklink(path string) error {
+	fSymlink := File(path)
+	if fSymlink.Exists() {
+		_ = fSymlink.Remove()
+	}
+	return os.Symlink(f.Path(), fSymlink.Path())
+}
+
 func (f *FileObj) Open() *os.File {
 	file, err := os.Open(f.Path())
 	if log.Error(err, "could not open file %s", f.Path()) {
