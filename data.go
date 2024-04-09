@@ -10,7 +10,7 @@ import (
 )
 
 func (f *FileObj) read(codec *c.Codec, target any) error {
-	file, _ := f.Open()
+	file, _ := f.OpenReadOnly()
 	return codec.Decode(file, target)
 }
 
@@ -114,7 +114,7 @@ func (f *FileObj) RenderFromTemplate(tmpl string, data any, fns template.FuncMap
 	if err != nil {
 		return err
 	}
-	outputFile, closer := f.Open()
+	outputFile, closer := f.OpenTruncate()
 	defer closer()
 	return t.Execute(outputFile, data)
 }
