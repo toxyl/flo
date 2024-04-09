@@ -43,6 +43,7 @@ func (f *FileObj) Create(perm fs.FileMode) error {
 	if log.Error(err, "could not create file %s", f.Path()) {
 		return err
 	}
+	file.WriteString("new file")
 	file.Close()
 	return f.Perm(perm)
 }
