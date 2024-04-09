@@ -11,8 +11,10 @@ type Codec struct {
 	Name         string
 	Decode       func(input io.Reader, output any) error
 	DecodeString func(input string, output any) error
+	DecodeBytes  func(input []byte, output any) error
 	Encode       func(input any, output io.Writer) error
 	EncodeString func(input any) string
+	EncodeBytes  func(input any) []byte
 }
 
 func NewCodec(
@@ -28,10 +30,16 @@ func NewCodec(
 		EncodeString: func(input any) string {
 			return "no encoder implemented for " + name
 		},
+		EncodeBytes: func(input any) []byte {
+			return []byte("no encoder implemented for " + name)
+		},
 		Decode: func(source io.Reader, target any) error {
 			return errors.ErrNoDecoderImplemented
 		},
 		DecodeString: func(source string, target any) error {
+			return errors.ErrNoDecoderImplemented
+		},
+		DecodeBytes: func(source []byte, target any) error {
 			return errors.ErrNoDecoderImplemented
 		},
 	}
@@ -49,6 +57,13 @@ func NewCodec(
 				return ""
 			}
 			return res.String()
+		}
+		c.EncodeBytes = func(input any) []byte {
+			res := utils.NewBytesIO([]byte{})
+			if err := c.Encode(input, res); err != nil {
+				return []byte{}
+			}
+			return res.Bytes()
 		}
 	}
 
@@ -68,6 +83,16 @@ func NewCodec(
 				return errors.ErrMustBePointer(target)
 			}
 			in := utils.NewStringIO(source)
+			if err := c.Decode(in, target); err != nil {
+				return err
+			}
+			return nil
+		}
+		c.DecodeBytes = func(source []byte, target any) error {
+			if !utils.IsPointer(target) {
+				return errors.ErrMustBePointer(target)
+			}
+			in := utils.NewBytesIO(source)
 			if err := c.Decode(in, target); err != nil {
 				return err
 			}
