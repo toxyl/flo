@@ -72,8 +72,18 @@ func (f *FileObj) OpenWriteOnly() *os.File {
 	return file
 }
 
+// OpenAppend opens the file for appending, creating the file if it doesn't exist.
 func (f *FileObj) OpenAppend() *os.File {
 	file, err := os.OpenFile(f.Path(), os.O_CREATE|os.O_APPEND, os.ModePerm)
+	if log.Error(err, "could not open file %s", f.Path()) {
+		return nil
+	}
+	return file
+}
+
+// OpenTruncate opens the file for writing, creating the file if it doesn't exist. The file will be truncated if it exists.
+func (f *FileObj) OpenTruncate() *os.File {
+	file, err := os.OpenFile(f.Path(), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, os.ModePerm)
 	if log.Error(err, "could not open file %s", f.Path()) {
 		return nil
 	}
