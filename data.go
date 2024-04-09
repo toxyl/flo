@@ -2,6 +2,7 @@ package flo
 
 import (
 	"bytes"
+	"html/template"
 
 	c "github.com/toxyl/flo/codec"
 	"github.com/toxyl/flo/log"
@@ -102,6 +103,20 @@ func (f *FileObj) StoreJSON(data any) error        { return f.write(c.JSON, data
 func (f *FileObj) StoreBase64URL(data any) error   { return f.write(c.BASE64_URL, data) }
 func (f *FileObj) StoreBase64Std(data any) error   { return f.write(c.BASE64_STD, data) }
 func (f *FileObj) StoreURL(data any) error         { return f.write(c.URL, data) }
+
+func (f *FileObj) RenderFromTemplate(tmpl string, data any, fns template.FuncMap) error {
+	t := template.New("new")
+	if fns != nil {
+		t.Funcs(fns)
+	}
+	_, err := t.Parse(tmpl)
+	if err != nil {
+		return err
+	}
+	outputFile := f.Open()
+	defer outputFile.Close()
+	return t.Execute(outputFile, data)
+}
 
 func (f *FileObj) WriteBytes(data []byte) *FileObj    { return f.mustWrite(c.BYTES, data) }
 func (f *FileObj) WriteBytesGZ(data []byte) *FileObj  { return f.mustWrite(c.BYTESGZ, data) }
