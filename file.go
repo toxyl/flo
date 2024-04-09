@@ -49,7 +49,7 @@ func (f *FileObj) Mklink(path string) error {
 }
 
 func (f *FileObj) Open() *os.File {
-	file, err := os.Open(f.Path())
+	file, err := os.OpenFile(f.Path(), os.O_RDWR|os.O_CREATE|os.O_APPEND, os.ModePerm)
 	if log.Error(err, "could not open file %s", f.Path()) {
 		return nil
 	}
