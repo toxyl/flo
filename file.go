@@ -37,6 +37,7 @@ func (f *FileObj) Depth() int                            { return strings.Count(
 func (f *FileObj) NewerThan(t time.Time) bool            { return f.info.NewerThan(t) }
 func (f *FileObj) OlderThan(t time.Time) bool            { return f.info.OlderThan(t) }
 func (f *FileObj) String(lenOwner, lenGroup int) string  { return f.info.String(lenOwner, lenGroup) }
+func (f *FileObj) Mkparent(perm fs.FileMode) error       { return f.Parent().Mkdir(perm) }
 
 func (f *FileObj) Open() *os.File {
 	file, err := os.Open(f.Path())
