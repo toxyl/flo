@@ -21,7 +21,7 @@ var (
 		return errors.Newf("failed set %s to %s: %v", file, mode.String(), err)
 	}
 	ErrIsNotExecutable = func(file string) error {
-		return errors.Newf("%s is not an executable, use SetExec(o, g, w) first", file)
+		return errors.Newf("%s is not an executable, use PermExec(o, g, w) first", file)
 	}
 	ErrIsNotDirectory = func(file string) error {
 		return errors.Newf("%s is not a directory", file)
