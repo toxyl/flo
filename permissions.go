@@ -136,14 +136,23 @@ func (f *FileObj) PermWriteAll() *FileObj {
 	return f.PermWrite(true, true, true)
 }
 
-func (f *FileObj) IsExecutable() bool      { return f.info.Permissions.World().HasExec() }
+func (f *FileObj) IsExecutable() bool {
+	return f.IsExecutableWorld() || f.IsExecutableGroup() || f.IsExecutableOwner()
+}
+func (f *FileObj) IsExecutableWorld() bool { return f.info.Permissions.World().HasExec() }
 func (f *FileObj) IsExecutableGroup() bool { return f.info.Permissions.Group().HasExec() }
 func (f *FileObj) IsExecutableOwner() bool { return f.info.Permissions.Owner().HasExec() }
 
-func (f *FileObj) IsReadable() bool      { return f.info.Permissions.World().HasRead() }
+func (f *FileObj) IsReadable() bool {
+	return f.IsReadableWorld() || f.IsReadableGroup() || f.IsReadableOwner()
+}
+func (f *FileObj) IsReadableWorld() bool { return f.info.Permissions.World().HasRead() }
 func (f *FileObj) IsReadableGroup() bool { return f.info.Permissions.Group().HasRead() }
 func (f *FileObj) IsReadableOwner() bool { return f.info.Permissions.Owner().HasRead() }
 
-func (f *FileObj) IsWritable() bool      { return f.info.Permissions.World().HasWrite() }
+func (f *FileObj) IsWritable() bool {
+	return f.IsWritableWorld() || f.IsWritableGroup() || f.IsWritableOwner()
+}
+func (f *FileObj) IsWritableWorld() bool { return f.info.Permissions.World().HasWrite() }
 func (f *FileObj) IsWritableGroup() bool { return f.info.Permissions.Group().HasWrite() }
 func (f *FileObj) IsWritableOwner() bool { return f.info.Permissions.Owner().HasWrite() }
