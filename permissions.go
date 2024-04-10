@@ -10,6 +10,7 @@ import (
 )
 
 func (f *FileObj) Own(username string) error {
+	defer f.updateInfo()
 	u, err := user.Lookup(username)
 	if err != nil {
 		return err
@@ -32,24 +33,28 @@ func (f *FileObj) Perm(mode fs.FileMode) error {
 }
 
 func (f *FileObj) PermOwner(r, w, x bool) *FileObj {
+	defer f.updateInfo()
 	f.info.Permissions.Owner().Set(r, w, x)
 	log.Error(f.Perm(f.info.Permissions.FileMode()), "Setting owner permissions on %s failed!", f.Path()) // aka +x
 	return f
 }
 
 func (f *FileObj) PermGroup(r, w, x bool) *FileObj {
+	defer f.updateInfo()
 	f.info.Permissions.Group().Set(r, w, x)
 	log.Error(f.Perm(f.info.Permissions.FileMode()), "Setting group permissions on %s failed!", f.Path()) // aka +x
 	return f
 }
 
 func (f *FileObj) PermWorld(r, w, x bool) *FileObj {
+	defer f.updateInfo()
 	f.info.Permissions.World().Set(r, w, x)
 	log.Error(f.Perm(f.info.Permissions.FileMode()), "Setting world permissions on %s failed!", f.Path()) // aka +x
 	return f
 }
 
 func (f *FileObj) PermExec(owner, group, world bool) *FileObj {
+	defer f.updateInfo()
 	// implicitly we will also set +r permissions as they are required for +x to work
 	if owner {
 		f.info.Permissions.Owner().SetExec()
@@ -78,6 +83,7 @@ func (f *FileObj) PermExecAll() *FileObj {
 }
 
 func (f *FileObj) PermRead(owner, group, world bool) *FileObj {
+	defer f.updateInfo()
 	// implicitly we will also clear +x permissions as they don't work with +r
 	if owner {
 		f.info.Permissions.Owner().SetRead()
@@ -106,6 +112,7 @@ func (f *FileObj) PermReadAll() *FileObj {
 }
 
 func (f *FileObj) PermWrite(owner, group, world bool) *FileObj {
+	defer f.updateInfo()
 	if owner {
 		f.info.Permissions.Owner().SetWrite()
 	} else {
