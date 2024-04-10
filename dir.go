@@ -20,7 +20,7 @@ type DirObj struct {
 
 func (f *FileObj) Mkdir(mode fs.FileMode) error {
 	p := f.path
-	if !f.Permissions().IsDir() {
+	if f.Exists() && !f.Permissions().IsDir() {
 		p = filepath.Dir(p)
 	}
 	if err := os.MkdirAll(p, mode); err != nil && !os.IsExist(err) {
