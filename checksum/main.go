@@ -7,9 +7,10 @@ import (
 )
 
 type Checksum struct {
-	algo *codec.Codec
-	file string
-	val  string
+	algo    *codec.Codec
+	file    string
+	val     string
+	changed bool
 }
 
 func (c *Checksum) sum() string {
@@ -32,18 +33,13 @@ func (c *Checksum) Update() {
 	if !valid {
 		panic("you must choose a valid checksum algorithm (SHA1, SHA256, SHA512, MD5, CRC32 or CRC64)")
 	}
-	c.val = c.sum()
+	s := c.sum()
+	c.changed = c.val != s
+	c.val = s
 }
 
-// Changed returns whether the current file checksum differs with the last one stored.
-// When `update` is set to `true`, the old checksum will be updated if it has changed.
-func (c *Checksum) Changed(update bool) bool {
-	chksum := c.sum()
-	changed := chksum != c.val
-	if changed && update {
-		c.val = chksum
-	}
-	return changed
+func (c *Checksum) Changed() bool {
+	return c.changed
 }
 
 func (c *Checksum) Matches(other *Checksum) bool {
@@ -60,9 +56,10 @@ func (c *Checksum) MatchesBytes(data []byte) bool {
 
 func New(algo *codec.Codec, path string) *Checksum {
 	c := &Checksum{
-		algo: algo,
-		file: path,
-		val:  "",
+		algo:    algo,
+		file:    path,
+		val:     "",
+		changed: false,
 	}
 	return c
 }
