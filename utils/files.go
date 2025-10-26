@@ -22,12 +22,12 @@ func FileCopy(src, destinationPath string, dirPerm, filePerm fs.FileMode) error 
 
 	dstFile, err := os.Create(destinationPath)
 	if err != nil {
-		return errors.ErrFailedToCreateFile(dstFile.Name(), err)
+		return errors.ErrFailedToCreateFile(destinationPath, err)
 	}
 	defer dstFile.Close()
 
 	if _, err := io.Copy(dstFile, srcFile); err != nil {
-		return errors.ErrFailedToCopyFile(srcFile.Name(), dstFile.Name(), err)
+		return errors.ErrFailedToCopyFile(srcFile.Name(), destinationPath, err)
 	}
 
 	if err := os.Chmod(destinationPath, filePerm); err != nil {

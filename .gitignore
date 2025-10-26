@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+
+_test_data
+_test_data_2
+.vscode
+embedded_fs_test.go
